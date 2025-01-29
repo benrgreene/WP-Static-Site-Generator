@@ -1,6 +1,12 @@
 <?php
 
 add_action('save_post', function ( $post_ID ) {
+	$post_type = get_post_type($post_ID);
+	// skip for revisions
+	if ($post_type == 'revision') {
+		return;
+	}
+
 	$post_permalink = get_permalink($post_ID);
 	$cleaned_permalink = str_replace(get_site_url() . '/', '', $post_permalink);
 	brg_ss_remove_htaccess_rule($cleaned_permalink);
