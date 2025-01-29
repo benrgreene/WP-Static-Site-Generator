@@ -7,11 +7,34 @@ add_action('save_post', function ( $post_ID ) {
 		return;
 	}
 
+	// save the archive
+	$archive_url = get_post_type_archive_link($post_type);
+	$max_posts = wp_count_posts($post_type);
+	$number_pages = ceil($max_posts->publish / get_option('posts_per_page'));
+	for ($page_number = 1; $page_number <= $number_pages; $page_number++) {
+		$base_url = $archive_url;
+		if ($page_number > 1) {
+			$base_url .= 'page/' . $page_number;
+		}
+		$archive_cleaned_permalink = str_replace(get_site_url() . '/', '', $base_url);
+		brg_ss_remove_htaccess_rule($archive_cleaned_permalink);
+		
+		$contents = file_get_contents($base_url);
+		$contents = preg_replace('/\s+/', ' ', $contents);
+		$filename = 'archive-html-file-' . $post_type . '-' . $page_number . '.html';
+		
+		if ($contents && $contents !== '') {
+			$full_path = brg_ss_save_page_contents($contents, $filename);
+			brg_ss_update_htaccess_files($archive_cleaned_permalink, $filename);
+		}
+	}
+
+	// save the post itself
 	$post_permalink = get_permalink($post_ID);
 	$cleaned_permalink = str_replace(get_site_url() . '/', '', $post_permalink);
 	brg_ss_remove_htaccess_rule($cleaned_permalink);
 	
-	$contents = brg_ss_get_page_contents($post_permalink);
+	$contents = file_get_contents($post_permalink);
 	$contents = preg_replace('/\s+/', ' ', $contents);
 	$filename = 'post-html-file-' . $post_ID . '.html';
 
