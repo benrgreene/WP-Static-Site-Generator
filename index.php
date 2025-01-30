@@ -11,6 +11,8 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt 
  */
 
+require_once('utils.php');
 require_once('hooks.php');
 require_once('config-writer.php');
 require_once('page-builder.php');
+require_once('settings.php');

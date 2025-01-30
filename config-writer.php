@@ -1,6 +1,6 @@
 <?php
 
-function brg_ss_update_htaccess_files ( $cleaned_permalink, $filename ) {
+function brg_ss_update_htaccess_files ($cleaned_permalink, $filename) {
 	$uploads_dir = wp_upload_dir()['basedir'];
 	$path_url = explode('wp-content', $uploads_dir)[0] . '.htaccess';
 
@@ -32,7 +32,12 @@ function brg_ss_update_htaccess_files ( $cleaned_permalink, $filename ) {
 	file_put_contents($path_url, implode("\n", $contents));
 }
 
-function brg_ss_remove_htaccess_rule( $cleaned_permalink ) {
+function brg_ss_remove_htaccess_rule ($cleaned_permalink) {
+	// handle if the permalink is for the front page
+	if ($cleaned_permalink == '') {
+		$cleaned_permalink = '^$';
+	}
+
 	$uploads_dir = wp_upload_dir()['basedir'];
 	$path_url = explode('wp-content', $uploads_dir)[0] . '.htaccess';
 
