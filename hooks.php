@@ -3,7 +3,7 @@
 // On customizer save, need to clear out old saved pages
 add_action('customize_save_after', function () {
 	brg_ss_deactivate_plugin('static-genny');
-	brg_ss_activate_plugin('static-genny');
+	brg_ss_activate_plugin('static-genny', false);
 
 	// resave all posts as static pages
 	$static_post_types = get_option('static-post-types', array());
@@ -23,8 +23,9 @@ add_action('save_post', function ($post_ID) {
 		return;
 	}
 
-	// skip for revisions
-	if ($post_type == 'revision' || $post_type == 'customize_changeset') {
+	// ensure that the post type is one meant to be statice
+	$allowed_post_types = get_option('static-post-types', array());
+	if (!in_array($post_type, $allowed_post_types)) {
 		return;
 	}
 
@@ -34,8 +35,9 @@ add_action('save_post', function ($post_ID) {
 
 // On plugin activation, add base htaccess contents
 add_action('activated_plugin', 'brg_ss_activate_plugin');
-function brg_ss_activate_plugin ($plugin) {
+function brg_ss_activate_plugin ($plugin, $should_redirect = true) {
 	if (str_contains($plugin, 'static-genny')) {
+		// Build out base addition to htaccess
 		$slashed_home = trailingslashit(get_option('home'));
 		$base = parse_url($slashed_home, PHP_URL_PATH);
 
@@ -55,6 +57,11 @@ RewriteBase $base
 $contents_full
 HTML;
 		file_put_contents($path_url, $new_contents);
+
+		if ($should_redirect) {
+			// send to plugin settings
+			exit(wp_redirect(admin_url('options-general.php?page=static-settings-page')));
+		}
 	}
 }
 
