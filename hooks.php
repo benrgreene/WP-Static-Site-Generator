@@ -1,5 +1,18 @@
 <?php
 
+// Force all pages with the search query to load search page
+// as search usually flows through homepage URL which is cached.
+// this allows separate search urls to exist
+add_filter('template_include', function ($template) {
+	if (is_search() || isset($_GET['s'])) {
+		if (file_exists(get_template_directory() . '/search.php')) {
+			$template = get_template_directory() . '/search.php';
+		}
+	}
+	return $template;
+}, 1);
+
+
 // On customizer save, need to clear out old saved pages
 add_action('customize_save_after', function () {
 	brg_ss_deactivate_plugin('static-genny');

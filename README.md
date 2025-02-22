@@ -7,3 +7,9 @@ The basic premise is that on posts being saved, the plugin will fetch an updated
 On the customizer being saved, the plugin will clean all rules and rebuild all pages to ensure that any options in the customizer take effect for all page & posts, and not just ones updated in the future.
 
 To set which post types become static, You can go to "Settings" -> "Static Generator"
+
+## Search
+
+This plugin can conflict with the search page, which usually is routed through the homepage. To resolve, it loads the theme search template for any URL that includes the search parameter. 
+
+It is recommended that for custom themes, you send search forms to a URL that isn't the same as your homepage (or any existing page), else the page might be cached and loaded statically.
