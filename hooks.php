@@ -44,6 +44,11 @@ add_action('save_post', function ($post_ID) {
 
 	brg_ss_save_archive($post_type);
 	brg_ss_save_single_post($post_ID);
+
+	$post_parent = wp_get_post_parent_id($post_ID);
+	if ($post_parent) {
+		brg_ss_save_single_post($post_parent);
+	}
 });
 
 // On plugin activation, add base htaccess contents

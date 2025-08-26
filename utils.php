@@ -42,7 +42,7 @@ function brg_ss_save_single_post ($post_ID) {
 	if ($post->post_status != 'publish') {
 		return;
 	}
-	
+
 	// save the post itself
 	$post_permalink = get_permalink($post_ID);
 	$cleaned_permalink = str_replace(get_site_url() . '/', '', $post_permalink);
